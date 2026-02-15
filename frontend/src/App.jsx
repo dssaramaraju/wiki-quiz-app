@@ -1,14 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
-function App() {
+const API_BASE = "https://wiki-quiz-app-xac3.onrender.com";
+
+export default function App() {
   const [url, setUrl] = useState("");
   const [quizData, setQuizData] = useState(null);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
   const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch history
+  const fetchHistory = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/history`);
+      setHistory(res.data);
+    } catch (err) {
+      console.error("Error fetching history", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
 
   // Generate Quiz
   const generateQuiz = async () => {
@@ -18,17 +34,17 @@ function App() {
     setQuizData(null);
     setScore(null);
     setAnswers({});
-    setShowHistory(false);
 
     try {
-      const response = await axios.post(
-        `http://127.0.0.1:8000/generate-quiz?url=${encodeURIComponent(url)}`
+      const res = await axios.post(
+        `${API_BASE}/generate-quiz?url=${encodeURIComponent(url)}`
       );
 
-      setQuizData(response.data);
-    } catch (error) {
-      console.error("Error generating quiz", error);
-      alert("Error generating quiz");
+      setQuizData(res.data);
+      setShowHistory(false);
+    } catch (err) {
+      console.error("Error generating quiz", err);
+      alert("Error generating quiz. Please check backend.");
     }
 
     setLoading(false);
@@ -36,7 +52,7 @@ function App() {
 
   // Submit Quiz
   const submitQuiz = async () => {
-    if (!quizData) return;
+    if (!quizData || !quizData.quiz) return;
 
     let calculatedScore = 0;
 
@@ -48,104 +64,80 @@ function App() {
 
     setScore(calculatedScore);
 
-    // Save score to backend
     try {
-      await axios.post("http://127.0.0.1:8000/save-score", {
-        quiz_id: quizData.id,
-        score: calculatedScore,
-      });
-    } catch (error) {
-      console.error("Error saving score");
-    }
-  };
-
-  // Fetch History
-  const fetchHistory = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/history");
-      setHistory(response.data);
-      setShowHistory(true);
-    } catch (error) {
-      console.error("Error fetching history");
+      await axios.put(
+        `${API_BASE}/quiz/${quizData.id}/score`,
+        { score: calculatedScore }
+      );
+      fetchHistory();
+    } catch (err) {
+      console.error("Error updating score", err);
     }
   };
 
   return (
     <div style={{ padding: "30px", fontFamily: "Arial" }}>
-      <h1>Wiki Quiz App</h1>
+      <h1>🚀 AI Wiki Quiz Generator</h1>
 
-      {/* Input Section */}
+      {/* URL Input */}
       <input
         type="text"
         placeholder="Enter Wikipedia URL"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
-        style={{ width: "400px", padding: "8px" }}
+        style={{ width: "400px", padding: "10px" }}
       />
       <button
         onClick={generateQuiz}
-        style={{ marginLeft: "10px", padding: "8px 12px" }}
+        style={{ marginLeft: "10px", padding: "10px 20px" }}
       >
         Generate Quiz
       </button>
 
       <button
-        onClick={fetchHistory}
-        style={{ marginLeft: "10px", padding: "8px 12px" }}
+        onClick={() => setShowHistory(!showHistory)}
+        style={{ marginLeft: "20px", padding: "10px 20px" }}
       >
-        Past Quizzes
+        📜 Past Quizzes
       </button>
 
-      {loading && <p>Generating quiz... Please wait ⏳</p>}
+      {/* Loading Animation */}
+      {loading && <h3>⏳ Generating quiz...</h3>}
 
       {/* Quiz Section */}
-      {quizData && !loading && (
+      {quizData && quizData.quiz && (
         <div style={{ marginTop: "30px" }}>
           <h2>{quizData.title}</h2>
 
-          {quizData.quiz.quiz.map((question, index) => (
-            <div
-              key={index}
-              style={{
-                border: "1px solid #ccc",
-                padding: "15px",
-                marginBottom: "15px",
-              }}
-            >
-              <p>
-                <b>
-                  Q{index + 1}. {question.question}
-                </b>
-              </p>
+          {quizData.quiz.quiz.map((q, index) => (
+            <div key={index} style={{ marginBottom: "20px" }}>
+              <h4>
+                Q{index + 1}. {q.question}
+              </h4>
 
-              {question.options.map((option, i) => (
+              {q.options.map((option, i) => (
                 <div key={i}>
-                  <input
-                    type="radio"
-                    name={`question-${index}`}
-                    value={option}
-                    onChange={() =>
-                      setAnswers({ ...answers, [index]: option })
-                    }
-                  />
-                  {option}
+                  <label>
+                    <input
+                      type="radio"
+                      name={`question-${index}`}
+                      value={option}
+                      onChange={() =>
+                        setAnswers({ ...answers, [index]: option })
+                      }
+                    />
+                    {option}
+                  </label>
                 </div>
               ))}
 
-              {/* After Submit */}
               {score !== null && (
-                <div style={{ marginTop: "10px" }}>
-                  <p>
-                    <b>Correct Answer:</b> {question.answer}
-                  </p>
-
-                  <p>
-                    <b>Explanation:</b> {question.explanation}
-                  </p>
-
-                  <p>
-                    <b>Difficulty:</b> {question.difficulty}
-                  </p>
+                <div style={{ marginTop: "5px" }}>
+                  <strong>Correct Answer:</strong> {q.answer}
+                  <br />
+                  <strong>Explanation:</strong> {q.explanation}
+                  <br />
+                  <strong>Difficulty:</strong> {q.difficulty}
                 </div>
               )}
             </div>
@@ -154,29 +146,30 @@ function App() {
           {score === null && (
             <button
               onClick={submitQuiz}
-              style={{ padding: "10px 15px", marginTop: "10px" }}
+              style={{ padding: "10px 20px" }}
             >
               Submit Quiz
             </button>
           )}
 
           {score !== null && (
-            <h3>
-              Your Score: {score} / {quizData.quiz.quiz.length}
-            </h3>
+            <h3>🎯 Your Score: {score}</h3>
           )}
         </div>
       )}
 
-      {/* History Section (Separate Button Only) */}
+      {/* History Section */}
       {showHistory && (
         <div style={{ marginTop: "40px" }}>
-          <h2>Past Quizzes</h2>
+          <h2>📜 Past Quiz History</h2>
+
+          {history.length === 0 && <p>No quizzes yet.</p>}
 
           {history.map((quiz) => (
             <div key={quiz.id} style={{ marginBottom: "10px" }}>
-              <b>ID:</b> {quiz.id} | <b>Title:</b> {quiz.title} |{" "}
-              <b>Score:</b> {quiz.score ?? "Not Attempted"}
+              <strong>ID:</strong> {quiz.id} |{" "}
+              <strong>Title:</strong> {quiz.title} |{" "}
+              <strong>Score:</strong> {quiz.score ?? 0}
             </div>
           ))}
         </div>
@@ -184,5 +177,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
