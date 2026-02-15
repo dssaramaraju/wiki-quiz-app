@@ -1,79 +1,79 @@
-import os
-import json
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from database import engine, get_db
 import models
-from services.scraper import scrape_wikipedia
-from services.llm_service import generate_quiz_from_content
+from database import engine, SessionLocal
+from services.scraper import extract_text_from_wikipedia
+from services.llm_service import generate_quiz_from_text
+from pydantic import BaseModel
+import json
 
 # Create tables
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# ==============================
-# CORS CONFIG (IMPORTANT)
-# ==============================
-
+# ✅ CORS FIX FOR PRODUCTION
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For production you can restrict this
+    allow_origins=[
+        "http://localhost:5173",  # local frontend
+        "https://wiki-quiz-crl770xwf-dssaramarajus-projects.vercel.app",  # your vercel frontend
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ==============================
-# ROOT
-# ==============================
+# DB Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
+
+# Root check
 @app.get("/")
-def home():
+def read_root():
     return {"message": "AI Wiki Quiz Generator Backend Running 🚀"}
 
 
-# ==============================
-# GENERATE QUIZ
-# ==============================
-
+# Generate Quiz
 @app.post("/generate-quiz")
 def generate_quiz(url: str, db: Session = Depends(get_db)):
+    try:
+        text = extract_text_from_wikipedia(url)
+        quiz_data = generate_quiz_from_text(text)
 
-    # 1️⃣ Scrape Wikipedia
-    scraped_data = scrape_wikipedia(url)
+        title = url.split("/")[-1].replace("_", " ")
 
-    # 2️⃣ Generate Quiz from LLM
-    quiz_data = generate_quiz_from_content(scraped_data["content"])
+        new_quiz = models.Quiz(
+            url=url,
+            title=title,
+            content=text,
+            quiz_data=json.dumps(quiz_data),
+            score=0
+        )
 
-    # 3️⃣ Store in DB
-    new_quiz = models.Quiz(
-        url=url,
-        title=scraped_data["title"],
-        content=scraped_data["content"],
-        quiz_data=json.dumps(quiz_data),
-        score=0
-    )
+        db.add(new_quiz)
+        db.commit()
+        db.refresh(new_quiz)
 
-    db.add(new_quiz)
-    db.commit()
-    db.refresh(new_quiz)
+        return {
+            "id": new_quiz.id,
+            "title": new_quiz.title,
+            "quiz": quiz_data
+        }
 
-    return {
-        "id": new_quiz.id,
-        "title": new_quiz.title,
-        "quiz": quiz_data
-    }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-# ==============================
-# GET QUIZ HISTORY
-# ==============================
-
+# Get History
 @app.get("/history")
 def get_history(db: Session = Depends(get_db)):
-
     quizzes = db.query(models.Quiz).all()
 
     return [
@@ -86,17 +86,13 @@ def get_history(db: Session = Depends(get_db)):
     ]
 
 
-# ==============================
-# GET QUIZ BY ID
-# ==============================
-
+# Get Quiz by ID
 @app.get("/quiz/{quiz_id}")
 def get_quiz(quiz_id: int, db: Session = Depends(get_db)):
-
     quiz = db.query(models.Quiz).filter(models.Quiz.id == quiz_id).first()
 
     if not quiz:
-        return {"error": "Quiz not found"}
+        raise HTTPException(status_code=404, detail="Quiz not found")
 
     return {
         "id": quiz.id,
@@ -106,20 +102,19 @@ def get_quiz(quiz_id: int, db: Session = Depends(get_db)):
     }
 
 
-# ==============================
-# UPDATE SCORE
-# ==============================
+# Update Score
+class ScoreUpdate(BaseModel):
+    score: int
+
 
 @app.put("/quiz/{quiz_id}/score")
-def update_score(quiz_id: int, data: dict, db: Session = Depends(get_db)):
-
+def update_score(quiz_id: int, score_data: ScoreUpdate, db: Session = Depends(get_db)):
     quiz = db.query(models.Quiz).filter(models.Quiz.id == quiz_id).first()
 
     if not quiz:
-        return {"error": "Quiz not found"}
+        raise HTTPException(status_code=404, detail="Quiz not found")
 
-    quiz.score = data.get("score", 0)
-
+    quiz.score = score_data.score
     db.commit()
 
     return {"message": "Score updated successfully"}
