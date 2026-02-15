@@ -1,0 +1,75 @@
+{
+  "id": 4,
+  "title": "Alan Turing",
+  "quiz": {
+    "quiz": [
+      {
+        "question": "Where was Alan Turing born?",
+        "options": [
+          "London",
+          "Manchester",
+          "Cambridge",
+          "Dublin"
+        ],
+        "answer": "London",
+        "difficulty": "easy",
+        "explanation": "Turing was born in Maida Vale, London."
+      },
+      {
+        "question": "What was the name of the section Turing led at Bletchley Park during World War II?",
+        "options": [
+          "Hut 8",
+          "Section X",
+          "Cipher Unit",
+          "Codebreakers Division"
+        ],
+        "answer": "Hut 8",
+        "difficulty": "medium",
+        "explanation": "Turing led Hut 8, the section responsible for German naval cryptanalysis."
+      },
+      {
+        "question": "Which university did Turing join in 1948 to contribute to the development of early computers?",
+        "options": [
+          "University of Cambridge",
+          "University of Manchester",
+          "Princeton University",
+          "King's College London"
+        ],
+        "answer": "University of Manchester",
+        "difficulty": "medium",
+        "explanation": "Turing joined Max Newman's Computing Machine Laboratory at the University of Manchester in 1948."
+      },
+      {
+        "question": "What procedure did Turing accept as an alternative to prison after being prosecuted for homosexual acts?",
+        "options": [
+          "Hormone treatment",
+          "Psychological therapy",
+          "Community service",
+          "Fine"
+        ],
+        "answer": "Hormone treatment",
+        "difficulty": "hard",
+        "explanation": "Turing accepted hormone treatment, commonly referred to as chemical castration, as an alternative to prison."
+      },
+      {
+        "question": "Which scientist described Turing as 'Atheist, homosexual, eccentric, marathon-running mathematician'?",
+        "options": [
+          "Douglas Hofstadter",
+          "Albert Einstein",
+          "Isaac Newton",
+          "Stephen Hawking"
+        ],
+        "answer": "Douglas Hofstadter",
+        "difficulty": "hard",
+        "explanation": "Douglas Hofstadter described Turing with those characteristics in a quote."
+      }
+    ],
+    "related_topics": [
+      "Theoretical computer science",
+      "Bletchley Park",
+      "Homosexuality laws in the UK",
+      "Chemical castration",
+      "Mathematical biology"
+    ]
+  }
+}

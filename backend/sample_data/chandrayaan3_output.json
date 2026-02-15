@@ -1,0 +1,75 @@
+{
+  "id": 5,
+  "title": "Chandrayaan-3",
+  "quiz": {
+    "quiz": [
+      {
+        "question": "When was Chandrayaan-3 launched?",
+        "options": [
+          "July 14, 2023",
+          "July 22, 2019",
+          "September 6, 2019",
+          "November 22, 2023"
+        ],
+        "answer": "July 14, 2023",
+        "difficulty": "easy",
+        "explanation": "Chandrayaan-3 was launched on July 14, 2023, at 14:35 IST from the Satish Dhawan Space Centre in Sriharikota, India."
+      },
+      {
+        "question": "What is the purpose of the Laser Retroreflector Array (LRA) instrument on the Chandrayaan-3 lander?",
+        "options": [
+          "To act as a location marker",
+          "To study lunar soil composition",
+          "To measure altitude in three directions",
+          "To generate electricity"
+        ],
+        "answer": "To act as a location marker",
+        "difficulty": "medium",
+        "explanation": "The LRA instrument on the Chandrayaan-3 lander acts as a location marker close to the lunar south pole, enabling orbiting spacecraft to use lasers for ranging."
+      },
+      {
+        "question": "What is the main reason for the landing failure of Chandrayaan-2 according to the article?",
+        "options": [
+          "Altitude increase during the camera coasting phase",
+          "Structural rigidity issues",
+          "Lack of scientific instruments",
+          "Lack of data transmission"
+        ],
+        "answer": "Altitude increase during the camera coasting phase",
+        "difficulty": "medium",
+        "explanation": "One of the main reasons for Chandrayaan-2's landing failure was altitude increase during the camera coasting phase, which was addressed in Chandrayaan-3 by allowing the lander to control altitude and thrust during all descent phases."
+      },
+      {
+        "question": "What is the mass of the Pragyan rover on Chandrayaan-3?",
+        "options": [
+          "26 kilograms",
+          "57 pounds",
+          "36.1 inches",
+          "750 millimeters"
+        ],
+        "answer": "26 kilograms",
+        "difficulty": "easy",
+        "explanation": "The Pragyan rover on Chandrayaan-3 has a mass of 26 kilograms."
+      },
+      {
+        "question": "What was the impact point of the Cryogenic Upper Stage (C25) of the rocket used to launch Chandrayaan-3?",
+        "options": [
+          "North Pacific Ocean",
+          "Indian Ocean",
+          "Arctic Ocean",
+          "South Atlantic Ocean"
+        ],
+        "answer": "North Pacific Ocean",
+        "difficulty": "hard",
+        "explanation": "The Cryogenic Upper Stage (C25) of the rocket used for Chandrayaan-3 made an uncontrolled re-entry into the Earth's atmosphere with the impact point predicted over the North Pacific Ocean."
+      }
+    ],
+    "related_topics": [
+      "Chandrayaan-2",
+      "Lunar exploration",
+      "ISRO missions",
+      "Lunar south pole",
+      "Space agencies"
+    ]
+  }
+}

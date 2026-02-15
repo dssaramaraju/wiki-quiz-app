@@ -1,0 +1,75 @@
+{
+  "id": 3,
+  "title": "ISRO",
+  "quiz": {
+    "quiz": [
+      {
+        "question": "When was the Indian Space Research Organisation (ISRO) established?",
+        "options": [
+          "1962",
+          "1972",
+          "1980",
+          "2002"
+        ],
+        "answer": "1969",
+        "difficulty": "easy",
+        "explanation": "ISRO was established in 1969, formerly known as the Indian National Committee for Space Research (INCOSPAR)."
+      },
+      {
+        "question": "Which country launched India's first satellite Aryabhata in 1975?",
+        "options": [
+          "USA",
+          "China",
+          "Russia",
+          "France"
+        ],
+        "answer": "Russia",
+        "difficulty": "easy",
+        "explanation": "India's first satellite Aryabhata was launched by the Soviet space agency Interkosmos in 1975."
+      },
+      {
+        "question": "What was the name of the first satellite launched by India on board the indigenously built launch vehicle SLV-3?",
+        "options": [
+          "RS-1",
+          "Bhaskara",
+          "Rohini",
+          "Aryabhata"
+        ],
+        "answer": "RS-1",
+        "difficulty": "medium",
+        "explanation": "The first satellite launched by India on board the indigenously built launch vehicle SLV-3 was named RS-1."
+      },
+      {
+        "question": "Which Indian scientist contributed to scientific principles applicable in space sciences after the 1920s?",
+        "options": [
+          "C. V. Raman",
+          "S. K. Mitra",
+          "Homi Bhabha",
+          "Meghnad Saha"
+        ],
+        "answer": "C. V. Raman",
+        "difficulty": "medium",
+        "explanation": "Indian scientist C. V. Raman contributed to scientific principles applicable in space sciences after the 1920s."
+      },
+      {
+        "question": "What was the name of the indigenous series of sounding rockets developed by ISRO in 1967?",
+        "options": [
+          "Aryabhata",
+          "Rohini",
+          "Bhaskara",
+          "RS-1"
+        ],
+        "answer": "Rohini",
+        "difficulty": "hard",
+        "explanation": "An indigenous series of sounding rockets named Rohini was developed by ISRO in 1967."
+      }
+    ],
+    "related_topics": [
+      "Indian Space Research Organisation",
+      "Vikram Sarabhai",
+      "Satellite Launch Vehicle",
+      "Indian Remote Sensing Programme",
+      "Liquid Propulsion Systems Centre"
+    ]
+  }
+}
